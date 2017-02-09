@@ -1,11 +1,13 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2017-02-07T14:16:47
+# Project created by QtCreator 2017-02-09T19:33:45
 #
 #-------------------------------------------------
 
 QT       += core gui
-QT += multimedia multimediawidgets
+QT       += multimedia
+QT       += multimedia multimediawidgets
+
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 

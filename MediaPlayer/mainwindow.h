@@ -3,6 +3,10 @@
 
 #include <QMainWindow>
 #include <QCamera>
+#include <QCameraViewfinder>
+#include <QIcon>
+#include <QMediaPlayer>
+#include <QFileDialog>
 
 namespace Ui {
 class MainWindow;
@@ -17,12 +21,21 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_PlayPushButton_clicked();
+    void on_CamPushButton_clicked();
 
-    void on_WebCamPushButton_clicked();
+    void on_RewindPushButton_clicked();
+
+    void on_PlayPausePushButton_clicked();
+
+    void on_ForwardPushButton_clicked();
+
+    void on_StopPushButton_clicked();
 
 private:
     Ui::MainWindow *ui;
+    QCamera* camera;
+    QMediaPlayer* player;
+    qreal velocity;
 };
 
 #endif // MAINWINDOW_H
