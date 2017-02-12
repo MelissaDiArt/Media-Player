@@ -26,14 +26,24 @@ MainWindow::~MainWindow()
 //Implementacion de la camara web
 void MainWindow::on_CamPushButton_clicked()
 {
-    camera->setViewfinder(ui->widget);
-    camera->start();
+    if(camera->status()==QCamera::ActiveStatus){
+        camera->stop();
+        ui->StopPushButton->setEnabled(false);
+
+    }else{
+
+        camera->setViewfinder(ui->widget);
+        camera->start();
+        ui->StopPushButton->setEnabled(true);
+
+    }
+
 }
 
 //Implementacion del video hacia atras
 void MainWindow::on_RewindPushButton_clicked()
 {
-    velocity -= 0.5;
+    velocity -= 1.1; //arreglar
     player->setPlaybackRate(velocity);
 }
 
@@ -43,7 +53,6 @@ void MainWindow::on_PlayPausePushButton_clicked()
     if(camera->status()==QCamera::ActiveStatus||player->state()==QMediaPlayer::StoppedState)
     {
         QString filename= QFileDialog::getOpenFileName(this,tr("Open File"),"../MediaPlayer",tr("Video(*.mp4)"));
-     //   connect(player, SIGNAL(positionChanged(qint64)),this,SLOT(positionChanged(qint64)));
         player->setMedia(QUrl::fromLocalFile(filename));
         player->setVideoOutput(ui->widget);
         player->play();
