@@ -7,6 +7,9 @@
 #include <QIcon>
 #include <QMediaPlayer>
 #include <QFileDialog>
+#include <QList>
+#include <QInputDialog>
+#include <QCameraInfo>
 
 namespace Ui {
 class MainWindow;
@@ -31,11 +34,15 @@ private slots:
 
     void on_StopPushButton_clicked();
 
+    void on_ConfigPushButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     QCamera* camera;
     QMediaPlayer* player;
     qreal velocity;
+    QByteArray name;
+    bool othercamera;
 };
 
 #endif // MAINWINDOW_H

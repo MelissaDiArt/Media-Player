@@ -9,6 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
     camera = new QCamera;
     player = new QMediaPlayer;
     velocity = 1.0;
+    othercamera = false;
 
     //Iconos de la interfaz
     ui->PlayPausePushButton->setIcon(QIcon("../MediaPlayer/play.png"));
@@ -16,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->RewindPushButton->setIcon(QIcon("../MediaPlayer/rewind.png"));
     ui->ForwardPushButton->setIcon(QIcon("../MediaPlayer/forward.png"));
     ui->StopPushButton->setIcon(QIcon("../MediaPlayer/stop.png"));
+    ui->ConfigPushButton->setIcon(QIcon("../MediaPlayer/config.png"));
 }
 
 MainWindow::~MainWindow()
@@ -26,16 +28,18 @@ MainWindow::~MainWindow()
 //Implementacion de la camara web
 void MainWindow::on_CamPushButton_clicked()
 {
-    if(camera->status()==QCamera::ActiveStatus){
-        camera->stop();
-        ui->StopPushButton->setEnabled(false);
+    camera = new QCamera(name);
+    camera->setViewfinder(ui->widget);
+    camera->start();
+    ui->StopPushButton->setEnabled(true);
+    ui->CamPushButton->setEnabled(false);
+
+    if(othercamera){
+        ui->statusBar->showMessage(QCamera::deviceDescription(name));
 
     }else{
-
-        camera->setViewfinder(ui->widget);
-        camera->start();
-        ui->StopPushButton->setEnabled(true);
-
+        QList<QByteArray> devices = QCamera::availableDevices();
+         ui->statusBar->showMessage(QCamera::deviceDescription(devices[0]));
     }
 
 }
@@ -56,6 +60,9 @@ void MainWindow::on_PlayPausePushButton_clicked()
         player->setMedia(QUrl::fromLocalFile(filename));
         player->setVideoOutput(ui->widget);
         player->play();
+        int Bar = filename.lastIndexOf("/");
+        filename.remove(0,Bar+1);
+        statusBar()->showMessage(filename);
         ui->PlayPausePushButton->setIcon(QIcon("../MediaPlayer/pause.png"));
         ui->RewindPushButton->setEnabled(true);
         ui->ForwardPushButton->setEnabled(true);
@@ -75,7 +82,7 @@ void MainWindow::on_PlayPausePushButton_clicked()
     }
 }
 
-//Implementacion del video hacia alante
+//Implementacion del video hacia delante
 void MainWindow::on_ForwardPushButton_clicked()
 {
     velocity += 0.5;
@@ -89,12 +96,28 @@ void MainWindow::on_StopPushButton_clicked()
     {
         camera->stop();
         ui->StopPushButton->setEnabled(false);
+        ui->CamPushButton->setEnabled(true);
+        statusBar()->clearMessage();
     }
     else if (player->state()==QMediaPlayer::PlayingState||player->state()==QMediaPlayer::PausedState)
     {
         player->stop();
         ui->StopPushButton->setEnabled(false);
+        statusBar()->clearMessage();
     }
 
 }
 
+//Implementar la ventana de configuracion de camaras.
+void MainWindow::on_ConfigPushButton_clicked()
+{
+    QList<QByteArray> devices = QCamera::availableDevices();
+    QStringList deviceslist;
+    for(int i=0;i<devices.size();i++)
+    {
+        deviceslist<<devices[i];
+    }
+    QString camname = QInputDialog::getItem(this,"Select camera","Camera", deviceslist, othercamera);
+    name = "";
+    name.append(camname);
+}
