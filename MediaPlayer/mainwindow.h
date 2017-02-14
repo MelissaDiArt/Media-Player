@@ -36,11 +36,12 @@ private slots:
 
     void on_ConfigPushButton_clicked();
 
+    void on_VolumePushButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     QCamera* camera;
     QMediaPlayer* player;
-    qreal velocity;
     QByteArray name;
     bool othercamera;
 };
