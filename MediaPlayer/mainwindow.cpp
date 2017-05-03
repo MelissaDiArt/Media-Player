@@ -39,12 +39,20 @@ void MainWindow::on_CamPushButton_clicked()
     ui->PlayPausePushButton->setIcon(QIcon("../MediaPlayer/Iconos/play.png"));
 
     if(othercamera){
+
         ui->statusBar->showMessage(name);
+
     }else{
         QList<QCameraInfo> devices = QCameraInfo::availableCameras();
-        ui->statusBar->showMessage(devices[0].description());
-    }
+        if(devices.empty()){
 
+            QMessageBox::information(this,tr("Camera"),tr("You haven't camera\n"),QMessageBox::Ok);
+
+        } else {
+
+            ui->statusBar->showMessage(devices[0].description());
+        }
+    }
 }
 
 //Implementacion del video hacia atras
@@ -62,26 +70,33 @@ void MainWindow::on_PlayPausePushButton_clicked()
     if(camera->status()==QCamera::ActiveStatus||player->state()==QMediaPlayer::StoppedState)
     {
         QString filename= QFileDialog::getOpenFileName(this,tr("Open File"),"../MediaPlayer",tr("Video(*.mp4)"));
-        player->setMedia(QUrl::fromLocalFile(filename));
-        player->setVideoOutput(ui->widget);
-        player->play();
-        int Bar = filename.lastIndexOf("/");
-        filename.remove(0,Bar+1);
-        statusBar()->showMessage(filename);
-        ui->PlayPausePushButton->setIcon(QIcon("../MediaPlayer/Iconos/pause.png"));
-        ui->RewindPushButton->setEnabled(true);
-        ui->ForwardPushButton->setEnabled(true);
-        ui->StopPushButton->setEnabled(true);
-        ui->VolumePushButton->setEnabled(true);
+
+        if (filename!=""){
+            player->setMedia(QUrl::fromLocalFile(filename));
+            player->setVideoOutput(ui->widget);
+            player->play();
+            int Bar = filename.lastIndexOf("/");
+            filename.remove(0,Bar+1);
+            statusBar()->showMessage(filename);
+            ui->PlayPausePushButton->setIcon(QIcon("../MediaPlayer/Iconos/pause.png"));
+            ui->RewindPushButton->setEnabled(true);
+            ui->ForwardPushButton->setEnabled(true);
+            ui->StopPushButton->setEnabled(true);
+            ui->VolumePushButton->setEnabled(true);
+        } else {
+            QMessageBox::information(this,tr("Video"),tr("You have yo select a video\n"),QMessageBox::Ok);
+        }
 
     }else if(player->state()==QMediaPlayer::PausedState){
+
        player->play();
        ui->PlayPausePushButton->setIcon(QIcon("../MediaPlayer/Iconos/pause.png"));
        ui->RewindPushButton->setEnabled(true);
        ui->ForwardPushButton->setEnabled(true);
-        ui->VolumePushButton->setEnabled(true);
+       ui->VolumePushButton->setEnabled(true);
 
     }else{
+
         player->pause();
         ui->PlayPausePushButton->setIcon(QIcon("../MediaPlayer/Iconos/play.png"));
         ui->RewindPushButton->setEnabled(false);

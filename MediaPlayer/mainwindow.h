@@ -10,6 +10,7 @@
 #include <QList>
 #include <QInputDialog>
 #include <QCameraInfo>
+#include <QMessageBox>
 
 namespace Ui {
 class MainWindow;
